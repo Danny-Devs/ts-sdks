@@ -6,7 +6,13 @@ import { sha3_256 } from '@noble/hashes/sha3';
 
 import { G1Element } from './bls12381.js';
 import type { G2Element, GTElement } from './bls12381.js';
-import { ENCRYPTED_SHARE_LENGTH, flatten, KEY_LENGTH, MAX_U8, SUI_ADDRESS_LENGTH } from './utils.js';
+import {
+	ENCRYPTED_SHARE_LENGTH,
+	flatten,
+	KEY_LENGTH,
+	MAX_U8,
+	SUI_ADDRESS_LENGTH,
+} from './utils.js';
 
 /**
  * The domain separation tag for the hash-to-group function.
