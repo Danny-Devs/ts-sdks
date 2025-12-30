@@ -1,0 +1,59 @@
+{
+	"name": "@mysten/dapp-kit-vue",
+	"author": "Mysten Labs <build@mystenlabs.com>",
+	"description": "Vue 3 bindings for @mysten/dapp-kit-core",
+	"version": "0.0.1",
+	"license": "Apache-2.0",
+	"private": true,
+	"files": [
+		"LICENSE",
+		"README.md",
+		"dist",
+		"src"
+	],
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./src/index.ts",
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"scripts": {
+		"clean": "rm -rf tsconfig.tsbuildinfo ./dist",
+		"build": "vite build",
+		"typecheck": "vue-tsc --noEmit",
+		"dev": "vite build --watch",
+		"prettier:check": "prettier -c --ignore-unknown .",
+		"prettier:fix": "prettier -w --ignore-unknown .",
+		"eslint:check": "eslint --max-warnings=0 .",
+		"eslint:fix": "pnpm run eslint:check --fix",
+		"lint": "pnpm run eslint:check && pnpm run prettier:check",
+		"lint:fix": "pnpm run eslint:fix && pnpm run prettier:fix"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/MystenLabs/ts-sdks.git"
+	},
+	"bugs": {
+		"url": "https://github.com/MystenLabs/ts-sdks/issues/new"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^5.2.1",
+		"typescript": "^5.9.3",
+		"vite": "^6.0.0",
+		"vue": "^3.5.0",
+		"vue-tsc": "^2.2.0"
+	},
+	"dependencies": {
+		"@mysten/dapp-kit-core": "workspace:*",
+		"@nanostores/vue": "^0.10.0",
+		"nanostores": "^1.0.1"
+	},
+	"peerDependencies": {
+		"vue": "^3.3.0"
+	}
+}
