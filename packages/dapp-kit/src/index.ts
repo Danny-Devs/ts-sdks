@@ -27,4 +27,19 @@ export * from './hooks/wallet/useWallets.js';
 export * from './themes/lightTheme.js';
 export * from './types.js';
 
+// Mobile environment detection utilities
+export {
+	isMobileEnvironment,
+	isIOSEnvironment,
+	isAndroidEnvironment,
+	areWalletExtensionsUnavailable,
+} from './utils/isMobileEnvironment.js';
+
+// Wallet filter utilities
+export {
+	DEFAULT_WALLET_FILTER,
+	MOBILE_WALLET_FILTER,
+	getEnvironmentAwareWalletFilter,
+} from './constants/walletDefaults.js';
+
 export type { Theme, ThemeVars, DynamicTheme } from './themes/themeContract.js';
