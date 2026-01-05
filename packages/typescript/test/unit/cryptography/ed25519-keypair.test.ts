@@ -1,7 +1,7 @@
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-import { fromBase64, toBase58 } from '@mysten/bcs';
+import { fromBase64, fromHex, toBase58, toHex } from '@mysten/bcs';
 import { ed25519 } from '@noble/curves/ed25519';
 import { describe, expect, it } from 'vitest';
 
@@ -152,5 +152,40 @@ describe('ed25519-keypair', () => {
 			await keypair.getPublicKey().verifyPersonalMessage(message, serializedSignature),
 		).toEqual(true);
 		expect(!!(await verifyPersonalMessageSignature(message, serializedSignature))).toEqual(true);
+	});
+
+	it('deriveKeypairFromSeed with hex string', () => {
+		// 64-byte seed as hex string (128 hex characters)
+		const seedHex =
+			'000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f';
+		const keypair = Ed25519Keypair.deriveKeypairFromSeed(seedHex);
+		expect(keypair.getPublicKey().toRawBytes().length).toBe(32);
+	});
+
+	it('deriveKeypairFromSeed with Uint8Array', () => {
+		// 64-byte seed as Uint8Array
+		const seedBytes = new Uint8Array(64);
+		for (let i = 0; i < 64; i++) {
+			seedBytes[i] = i;
+		}
+		const keypair = Ed25519Keypair.deriveKeypairFromSeed(seedBytes);
+		expect(keypair.getPublicKey().toRawBytes().length).toBe(32);
+	});
+
+	it('deriveKeypairFromSeed hex and Uint8Array produce same keypair', () => {
+		// Same seed in both formats should produce identical keypairs
+		const seedBytes = new Uint8Array(64);
+		for (let i = 0; i < 64; i++) {
+			seedBytes[i] = i;
+		}
+		const seedHex = toHex(seedBytes);
+
+		const keypairFromHex = Ed25519Keypair.deriveKeypairFromSeed(seedHex);
+		const keypairFromBytes = Ed25519Keypair.deriveKeypairFromSeed(seedBytes);
+
+		expect(keypairFromHex.getPublicKey().toBase64()).toEqual(
+			keypairFromBytes.getPublicKey().toBase64(),
+		);
+		expect(keypairFromHex.getSecretKey()).toEqual(keypairFromBytes.getSecretKey());
 	});
 });

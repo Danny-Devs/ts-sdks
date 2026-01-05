@@ -23,9 +23,10 @@ const pathRegex = new RegExp("^m(\\/[0-9]+')+$");
 
 const replaceDerive = (val: string): string => val.replace("'", '');
 
-const getMasterKeyFromSeed = (seed: Hex): Keys => {
+const getMasterKeyFromSeed = (seed: Hex | Uint8Array): Keys => {
 	const h = hmac.create(sha512, ED25519_CURVE);
-	const I = h.update(fromHex(seed)).digest();
+	const seedBytes = typeof seed === 'string' ? fromHex(seed) : seed;
+	const I = h.update(seedBytes).digest();
 	const IL = I.slice(0, 32);
 	const IR = I.slice(32);
 	return {
@@ -64,7 +65,7 @@ const isValidPath = (path: string): boolean => {
 		.some(isNaN as any /* ts T_T*/);
 };
 
-export const derivePath = (path: Path, seed: Hex, offset = HARDENED_OFFSET): Keys => {
+export const derivePath = (path: Path, seed: Hex | Uint8Array, offset = HARDENED_OFFSET): Keys => {
 	if (!isValidPath(path)) {
 		throw new Error('Invalid derivation path');
 	}

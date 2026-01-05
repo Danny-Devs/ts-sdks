@@ -1,0 +1,71 @@
+{
+	"name": "@dannydevs/vui-dapp-kit",
+	"author": "Danny <danny@dannydevs.com>",
+	"description": "The delightful Vue 3 dApp Kit for SUI - built with Composition API magic. Superior DX, comprehensive features, AI-friendly structure.",
+	"homepage": "https://github.com/Danny-Devs/ts-sdks/tree/main/packages/vui-dapp-kit",
+	"version": "0.1.0",
+	"license": "Apache-2.0",
+	"keywords": [
+		"sui",
+		"blockchain",
+		"web3",
+		"vue",
+		"vue3",
+		"dapp",
+		"wallet",
+		"composition-api",
+		"composables"
+	],
+	"files": [
+		"CHANGELOG.md",
+		"LICENSE",
+		"README.md",
+		"dist",
+		"src"
+	],
+	"type": "module",
+	"main": "./dist/index.js",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./dist/style.css": "./dist/style.css"
+	},
+	"scripts": {
+		"dev": "vite build --watch",
+		"build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:ui": "vitest --ui",
+		"type-check": "vue-tsc --noEmit",
+		"prettier:check": "prettier -c --ignore-unknown .",
+		"prettier:fix": "prettier -w --ignore-unknown .",
+		"lint": "eslint . && pnpm prettier:check",
+		"lint:fix": "eslint . --fix && pnpm prettier:fix"
+	},
+	"peerDependencies": {
+		"vue": "^3.3.0"
+	},
+	"dependencies": {
+		"@mysten/sui": "workspace:*",
+		"@mysten/utils": "workspace:*",
+		"@mysten/wallet-standard": "workspace:*",
+		"@tanstack/vue-query": "^5.87.1",
+		"@vueuse/core": "^11.3.0",
+		"pinia": "^2.2.0",
+		"pinia-plugin-persistedstate": "^4.7.1"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^5.2.1",
+		"@vue/test-utils": "^2.4.6",
+		"happy-dom": "^18.0.1",
+		"typescript": "^5.9.2",
+		"vite": "^7.1.5",
+		"vitest": "^3.2.4",
+		"vue": "^3.5.13",
+		"vue-tsc": "^2.2.0"
+	}
+}

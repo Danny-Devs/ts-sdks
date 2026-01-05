@@ -166,15 +166,18 @@ export class Ed25519Keypair extends Keypair {
 	 *
 	 * If path is none, it will default to m/44'/784'/0'/0'/0', otherwise the path must
 	 * be compliant to SLIP-0010 in form m/44'/784'/{account_index}'/{change_index}'/{address_index}'.
+	 *
+	 * @param seed - The seed as a hex string or Uint8Array
+	 * @param path - The derivation path (optional)
 	 */
-	static deriveKeypairFromSeed(seedHex: string, path?: string): Ed25519Keypair {
+	static deriveKeypairFromSeed(seed: string | Uint8Array, path?: string): Ed25519Keypair {
 		if (path == null) {
 			path = DEFAULT_ED25519_DERIVATION_PATH;
 		}
 		if (!isValidHardenedPath(path)) {
 			throw new Error('Invalid derivation path');
 		}
-		const { key } = derivePath(path, seedHex);
+		const { key } = derivePath(path, seed);
 
 		return Ed25519Keypair.fromSecretKey(key);
 	}
