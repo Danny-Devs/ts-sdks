@@ -865,7 +865,7 @@ function mapOwner(owner: Owner | null | undefined): SuiClientTypes.ObjectOwner |
 	);
 }
 
-function parseGrpcExecutionError(error: GrpcExecutionError): SuiClientTypes.ExecutionError {
+export function parseGrpcExecutionError(error: GrpcExecutionError): SuiClientTypes.ExecutionError {
 	const message = error.description ?? 'Unknown error';
 	const command = error.command != null ? Number(error.command) : undefined;
 	const details = error.errorDetails;
@@ -903,7 +903,7 @@ function parseGrpcExecutionError(error: GrpcExecutionError): SuiClientTypes.Exec
 				message,
 				command,
 				SizeError: {
-					name: mapErrorName(error.kind),
+					name: mapErrorName(error.kind, ExecutionError_ExecutionErrorKind),
 					size: Number(details.sizeError.size ?? 0n),
 					maxSize: Number(details.sizeError.maxSize ?? 0n),
 				},
@@ -916,7 +916,10 @@ function parseGrpcExecutionError(error: GrpcExecutionError): SuiClientTypes.Exec
 				command,
 				CommandArgumentError: {
 					argument: details.commandArgumentError.argument ?? 0,
-					name: mapErrorName(details.commandArgumentError.kind),
+					name: mapErrorName(
+						details.commandArgumentError.kind,
+						CommandArgumentError_CommandArgumentErrorKind,
+					),
 				},
 			};
 
@@ -927,7 +930,10 @@ function parseGrpcExecutionError(error: GrpcExecutionError): SuiClientTypes.Exec
 				command,
 				TypeArgumentError: {
 					typeArgument: details.typeArgumentError.typeArgument ?? 0,
-					name: mapErrorName(details.typeArgumentError.kind),
+					name: mapErrorName(
+						details.typeArgumentError.kind,
+						TypeArgumentError_TypeArgumentErrorKind,
+					),
 				},
 			};
 
@@ -937,7 +943,10 @@ function parseGrpcExecutionError(error: GrpcExecutionError): SuiClientTypes.Exec
 				message,
 				command,
 				PackageUpgradeError: {
-					name: mapErrorName(details.packageUpgradeError.kind),
+					name: mapErrorName(
+						details.packageUpgradeError.kind,
+						PackageUpgradeError_PackageUpgradeErrorKind,
+					),
 					packageId: details.packageUpgradeError.packageId,
 					digest: details.packageUpgradeError.digest,
 				},
@@ -960,7 +969,7 @@ function parseGrpcExecutionError(error: GrpcExecutionError): SuiClientTypes.Exec
 				message,
 				command,
 				CoinDenyListError: {
-					name: mapErrorName(error.kind),
+					name: mapErrorName(error.kind, ExecutionError_ExecutionErrorKind),
 					coinType: details.coinDenyListError.coinType!,
 					address: details.coinDenyListError.address,
 				},
@@ -972,7 +981,7 @@ function parseGrpcExecutionError(error: GrpcExecutionError): SuiClientTypes.Exec
 				message,
 				command,
 				CongestedObjects: {
-					name: mapErrorName(error.kind),
+					name: mapErrorName(error.kind, ExecutionError_ExecutionErrorKind),
 					objects: details.congestedObjects.objects,
 				},
 			};
@@ -983,7 +992,7 @@ function parseGrpcExecutionError(error: GrpcExecutionError): SuiClientTypes.Exec
 				message,
 				command,
 				ObjectIdError: {
-					name: mapErrorName(error.kind),
+					name: mapErrorName(error.kind, ExecutionError_ExecutionErrorKind),
 					objectId: details.objectId,
 				},
 			};
@@ -1021,6 +1030,10 @@ function parseMoveAbort(abort: GrpcMoveAbort): SuiClientTypes.MoveAbort {
 	};
 }
 
+// The four execution-error categories each declare their own `*ErrorKind` enum, and
+// their numeric values overlap (e.g. `1` is `INSUFFICIENT_GAS` for an execution error
+// but `TYPE_MISMATCH` for a command-argument error), so each kind must be reverse-mapped
+// against the enum it actually came from.
 function mapErrorName(
 	kind:
 		| ExecutionError_ExecutionErrorKind
@@ -1028,11 +1041,12 @@ function mapErrorName(
 		| TypeArgumentError_TypeArgumentErrorKind
 		| PackageUpgradeError_PackageUpgradeErrorKind
 		| undefined,
+	kindEnum: Record<number, string>,
 ): string {
 	if (kind == null) {
 		return 'Unknown';
 	}
-	const name = CommandArgumentError_CommandArgumentErrorKind[kind];
+	const name = kindEnum[kind];
 	if (!name || name.endsWith('_UNKNOWN')) {
 		return 'Unknown';
 	}
